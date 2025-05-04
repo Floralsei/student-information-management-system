@@ -1,35 +1,36 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-*.egg
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+*.iml
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+.settings/
+.project
+.classpath
+.factorypath
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
 
 # OS
 .DS_Store
