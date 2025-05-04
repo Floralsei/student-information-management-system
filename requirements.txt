@@ -1,8 +1,0 @@
-PyQt5==5.15.9
-SQLite3==2.6.0
-pandas==2.0.3
-numpy==1.24.3
-matplotlib==3.7.1
-PyQt6==6.6.1
-PyQt6-Qt6==6.6.1
-PyQt6-sip==13.6.0 
