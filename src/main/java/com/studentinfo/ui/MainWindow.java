@@ -1,96 +1,73 @@
 package com.studentinfo.ui;
 
+import com.studentinfo.database.DatabaseConnection;
+import com.studentinfo.model.User;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MainWindow extends JFrame {
-    private String userRole;
-    private JTabbedPane tabbedPane;
+    private final User user;
+    private final DatabaseConnection dbConnection;
 
-    public MainWindow(String userRole) {
-        this.userRole = userRole;
-        setTitle("学生信息管理系统");
+    public MainWindow(User user, DatabaseConnection dbConnection) {
+        this.user = user;
+        this.dbConnection = dbConnection;
+        
+        // 设置窗口标题和大小
+        setTitle("学生信息管理系统 - " + user.getRole());
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setMinimumSize(new Dimension(800, 600));
-
-        initUI();
-        setupMenu();
-    }
-
-    private void initUI() {
-        // 顶部欢迎信息
-        JLabel welcomeLabel = new JLabel("欢迎使用学生信息管理系统 - 当前用户：" + userRole);
-        welcomeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        add(welcomeLabel, BorderLayout.NORTH);
-
-        // 创建选项卡
-        tabbedPane = new JTabbedPane();
-        add(tabbedPane, BorderLayout.CENTER);
-
-        // 添加学生管理选项卡（仅管理员可见）
-        if ("admin".equals(userRole)) {
-            StudentManagementTab studentTab = new StudentManagementTab();
-            tabbedPane.addTab("学生信息管理", studentTab);
-        }
-
-        // 添加成绩管理选项卡
-        GradeManagementTab gradeTab = new GradeManagementTab();
-        tabbedPane.addTab("成绩管理", gradeTab);
-    }
-
-    private void setupMenu() {
+        
+        // 创建菜单栏
         JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+        
+        // 设置字体
+        Font font = new Font("Microsoft YaHei", Font.PLAIN, 14);
         
         // 文件菜单
         JMenu fileMenu = new JMenu("文件");
-        
-        // 添加用户管理菜单项（仅管理员可见）
-        if ("admin".equals(userRole)) {
-            JMenuItem userManagementItem = new JMenuItem("用户管理");
-            userManagementItem.addActionListener(e -> showUserManagement());
-            fileMenu.add(userManagementItem);
-            fileMenu.addSeparator();
-        }
-
-        JMenuItem logoutItem = new JMenuItem("退出登录");
-        logoutItem.addActionListener(e -> logout());
-        fileMenu.add(logoutItem);
+        fileMenu.setFont(font);
         menuBar.add(fileMenu);
-
-        // 帮助菜单
-        JMenu helpMenu = new JMenu("帮助");
-        JMenuItem aboutItem = new JMenuItem("关于");
-        aboutItem.addActionListener(e -> showAbout());
-        helpMenu.add(aboutItem);
-        menuBar.add(helpMenu);
-
-        setJMenuBar(menuBar);
-    }
-
-    private void showUserManagement() {
-        UserManagementDialog dialog = new UserManagementDialog(this);
-        dialog.setVisible(true);
-    }
-
-    private void logout() {
-        int reply = JOptionPane.showConfirmDialog(this, "确定要退出登录吗？", "确认",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         
-        if (reply == JOptionPane.YES_OPTION) {
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.setVisible(true);
+        JMenuItem exitItem = new JMenuItem("退出");
+        exitItem.setFont(font);
+        exitItem.addActionListener(e -> System.exit(0));
+        fileMenu.add(exitItem);
+        
+        // 用户菜单
+        JMenu userMenu = new JMenu("用户");
+        userMenu.setFont(font);
+        menuBar.add(userMenu);
+        
+        JMenuItem logoutItem = new JMenuItem("退出登录");
+        logoutItem.setFont(font);
+        logoutItem.addActionListener(e -> {
             dispose();
-        }
+            new LoginWindow(dbConnection).setVisible(true);
+        });
+        userMenu.add(logoutItem);
+        
+        // 主面板
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        add(mainPanel);
+        
+        // 欢迎信息
+        JLabel welcomeLabel = new JLabel("欢迎，" + user.getUsername() + "！", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("Microsoft YaHei", Font.BOLD, 24));
+        mainPanel.add(welcomeLabel, BorderLayout.CENTER);
     }
-
-    private void showAbout() {
-        JOptionPane.showMessageDialog(this,
-                "学生信息管理系统 v1.0\n\n" +
-                "基于Java和Swing开发\n" +
-                "用于管理学生信息和成绩",
-                "关于", JOptionPane.INFORMATION_MESSAGE);
+    
+    @Override
+    public void dispose() {
+        try {
+            dbConnection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.dispose();
     }
 } 
