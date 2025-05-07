@@ -1,105 +1,132 @@
 package com.studentinfo.dao;
 
-import com.studentinfo.database.DatabaseConnection;
 import com.studentinfo.model.Course;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CourseDAO {
-    private final DatabaseConnection dbConnection;
+    private final Connection connection;
 
-    public CourseDAO(DatabaseConnection dbConnection) {
-        this.dbConnection = dbConnection;
+    public CourseDAO(Connection connection) {
+        this.connection = connection;
     }
 
     public void addCourse(Course course) throws SQLException {
-        String sql = "INSERT INTO courses (course_id, name, teacher, credits, description, max_students) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
-        
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, course.getCourseId());
-            pstmt.setString(2, course.getName());
-            pstmt.setString(3, course.getTeacher());
-            pstmt.setInt(4, course.getCredits());
-            pstmt.setString(5, course.getDescription());
-            pstmt.setInt(6, course.getMaxStudents());
-            pstmt.executeUpdate();
+        String sql = "INSERT INTO courses (course_code, name, credits, teacher_id, description, status) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, course.getCourseCode());
+            stmt.setString(2, course.getName());
+            stmt.setInt(3, course.getCredits());
+            stmt.setInt(4, course.getTeacherId());
+            stmt.setString(5, course.getDescription());
+            stmt.setString(6, course.getStatus());
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    course.setId(rs.getInt(1));
+                }
+            }
         }
     }
 
-    public List<Course> getAllCourses() throws SQLException {
-        List<Course> courses = new ArrayList<>();
-        String sql = "SELECT * FROM courses";
-
-        try (Connection conn = dbConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
-            while (rs.next()) {
-                Course course = new Course(
-                    rs.getInt("id"),
-                    rs.getString("course_id"),
-                    rs.getString("name"),
-                    rs.getString("teacher"),
-                    rs.getInt("credits"),
-                    rs.getString("description"),
-                    rs.getInt("max_students")
-                );
-                courses.add(course);
-            }
+    public void updateCourse(Course course) throws SQLException {
+        String sql = "UPDATE courses SET course_code = ?, name = ?, credits = ?, teacher_id = ?, description = ?, status = ? WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, course.getCourseCode());
+            stmt.setString(2, course.getName());
+            stmt.setInt(3, course.getCredits());
+            stmt.setInt(4, course.getTeacherId());
+            stmt.setString(5, course.getDescription());
+            stmt.setString(6, course.getStatus());
+            stmt.setInt(7, course.getId());
+            stmt.executeUpdate();
         }
-        return courses;
+    }
+
+    public void deleteCourse(int id) throws SQLException {
+        String sql = "DELETE FROM courses WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+        }
     }
 
     public Course getCourseById(int id) throws SQLException {
         String sql = "SELECT * FROM courses WHERE id = ?";
-        
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Course(
-                        rs.getInt("id"),
-                        rs.getString("course_id"),
-                        rs.getString("name"),
-                        rs.getString("teacher"),
-                        rs.getInt("credits"),
-                        rs.getString("description"),
-                        rs.getInt("max_students")
-                    );
+                    return extractCourseFromResultSet(rs);
                 }
             }
         }
         return null;
     }
 
-    public void updateCourse(Course course) throws SQLException {
-        String sql = "UPDATE courses SET course_id = ?, name = ?, teacher = ?, " +
-                    "credits = ?, description = ?, max_students = ? WHERE id = ?";
-        
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, course.getCourseId());
-            pstmt.setString(2, course.getName());
-            pstmt.setString(3, course.getTeacher());
-            pstmt.setInt(4, course.getCredits());
-            pstmt.setString(5, course.getDescription());
-            pstmt.setInt(6, course.getMaxStudents());
-            pstmt.setInt(7, course.getId());
-            pstmt.executeUpdate();
+    public Course getCourseByCode(String courseCode) throws SQLException {
+        String sql = "SELECT * FROM courses WHERE course_code = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, courseCode);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return extractCourseFromResultSet(rs);
+                }
+            }
         }
+        return null;
     }
 
-    public void deleteCourse(int id) throws SQLException {
-        String sql = "DELETE FROM courses WHERE id = ?";
-        
-        try (Connection conn = dbConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
+    public List<Course> getAllCourses() throws SQLException {
+        String sql = "SELECT * FROM courses";
+        List<Course> courses = new ArrayList<>();
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                courses.add(extractCourseFromResultSet(rs));
+            }
         }
+        return courses;
+    }
+
+    public List<Course> getCoursesByTeacherId(int teacherId) throws SQLException {
+        String sql = "SELECT * FROM courses WHERE teacher_id = ?";
+        List<Course> courses = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, teacherId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    courses.add(extractCourseFromResultSet(rs));
+                }
+            }
+        }
+        return courses;
+    }
+
+    public List<Course> getAvailableCourses() throws SQLException {
+        String sql = "SELECT * FROM courses WHERE status = '开放选课'";
+        List<Course> courses = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    courses.add(extractCourseFromResultSet(rs));
+                }
+            }
+        }
+        return courses;
+    }
+
+    private Course extractCourseFromResultSet(ResultSet rs) throws SQLException {
+        Course course = new Course();
+        course.setId(rs.getInt("id"));
+        course.setCourseCode(rs.getString("course_code"));
+        course.setName(rs.getString("name"));
+        course.setCredits(rs.getInt("credits"));
+        course.setTeacherId(rs.getInt("teacher_id"));
+        course.setDescription(rs.getString("description"));
+        course.setStatus(rs.getString("status"));
+        return course;
     }
 } 

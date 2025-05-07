@@ -2,25 +2,24 @@ package com.studentinfo.model;
 
 public class Course {
     private int id;
-    private String courseId;
+    private String courseCode;
     private String name;
-    private String teacher;
     private int credits;
+    private int teacherId;
     private String description;
-    private int maxStudents;
+    private String status;
 
     public Course() {
     }
 
-    public Course(int id, String courseId, String name, String teacher, 
-                 int credits, String description, int maxStudents) {
+    public Course(int id, String courseCode, String name, int credits, int teacherId, String description, String status) {
         this.id = id;
-        this.courseId = courseId;
+        this.courseCode = courseCode;
         this.name = name;
-        this.teacher = teacher;
         this.credits = credits;
+        this.teacherId = teacherId;
         this.description = description;
-        this.maxStudents = maxStudents;
+        this.status = status;
     }
 
     // Getters and Setters
@@ -32,12 +31,12 @@ public class Course {
         this.id = id;
     }
 
-    public String getCourseId() {
-        return courseId;
+    public String getCourseCode() {
+        return courseCode;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
     }
 
     public String getName() {
@@ -48,20 +47,20 @@ public class Course {
         this.name = name;
     }
 
-    public String getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(String teacher) {
-        this.teacher = teacher;
-    }
-
     public int getCredits() {
         return credits;
     }
 
     public void setCredits(int credits) {
         this.credits = credits;
+    }
+
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
     }
 
     public String getDescription() {
@@ -72,11 +71,16 @@ public class Course {
         this.description = description;
     }
 
-    public int getMaxStudents() {
-        return maxStudents;
+    public String getStatus() {
+        return status;
     }
 
-    public void setMaxStudents(int maxStudents) {
-        this.maxStudents = maxStudents;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return courseCode + " - " + name;
     }
 } 

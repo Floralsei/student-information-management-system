@@ -1,31 +1,41 @@
 package com.studentinfo.model;
 
+import java.time.LocalDate;
+
 public class Student {
     private int id;
-    private String studentId;
+    private String studentNumber;
     private String name;
     private String gender;
-    private String birthDate;
-    private String major;
-    private String email;
+    private LocalDate birthDate;
+    private String address;
     private String phone;
+    private String email;
+    private LocalDate enrollmentDate;
+    private String status;
+    private String politicalStatus;
+    private String dormitory;
 
     public Student() {
     }
 
-    public Student(int id, String studentId, String name, String gender, String birthDate, 
-                  String major, String email, String phone) {
+    public Student(int id, String studentNumber, String name, String gender, LocalDate birthDate,
+                  String address, String phone, String email, LocalDate enrollmentDate,
+                  String status, String politicalStatus, String dormitory) {
         this.id = id;
-        this.studentId = studentId;
+        this.studentNumber = studentNumber;
         this.name = name;
         this.gender = gender;
         this.birthDate = birthDate;
-        this.major = major;
-        this.email = email;
+        this.address = address;
         this.phone = phone;
+        this.email = email;
+        this.enrollmentDate = enrollmentDate;
+        this.status = status;
+        this.politicalStatus = politicalStatus;
+        this.dormitory = dormitory;
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -34,12 +44,12 @@ public class Student {
         this.id = id;
     }
 
-    public String getStudentId() {
-        return studentId;
+    public String getStudentNumber() {
+        return studentNumber;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
+    public void setStudentNumber(String studentNumber) {
+        this.studentNumber = studentNumber;
     }
 
     public String getName() {
@@ -58,20 +68,28 @@ public class Student {
         this.gender = gender;
     }
 
-    public String getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(String birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
-    public String getMajor() {
-        return major;
+    public String getAddress() {
+        return address;
     }
 
-    public void setMajor(String major) {
-        this.major = major;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {
@@ -82,11 +100,35 @@ public class Student {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
+    public LocalDate getEnrollmentDate() {
+        return enrollmentDate;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setEnrollmentDate(LocalDate enrollmentDate) {
+        this.enrollmentDate = enrollmentDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPoliticalStatus() {
+        return politicalStatus;
+    }
+
+    public void setPoliticalStatus(String politicalStatus) {
+        this.politicalStatus = politicalStatus;
+    }
+
+    public String getDormitory() {
+        return dormitory;
+    }
+
+    public void setDormitory(String dormitory) {
+        this.dormitory = dormitory;
     }
 } 

@@ -4,14 +4,21 @@ public class User {
     private int id;
     private String username;
     private String password;
-    private String role; // admin, teacher, student
+    private Role role;
     private String email;
     private String phone;
 
     public User() {
     }
 
-    public User(int id, String username, String password, String role, String email, String phone) {
+    public User(int id, String username, String password, Role role) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
+    public User(int id, String username, String password, Role role, String email, String phone) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -45,11 +52,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -67,5 +74,11 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public enum Role {
+        ADMIN,
+        TEACHER,
+        STUDENT
     }
 } 

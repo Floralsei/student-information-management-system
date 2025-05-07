@@ -1,10 +1,27 @@
-# Java
+# Compiled class files
 *.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
 *.jar
 *.war
+*.nar
 *.ear
-*.logs
-*.iml
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs
+hs_err_pid*
+replay_pid*
 
 # Maven
 target/
@@ -16,22 +33,21 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
 
-# IDE
+# IDE files
 .idea/
+*.iml
 .vscode/
-*.swp
-*.swo
 .settings/
-.project
 .classpath
-.factorypath
+.project
 
-# Database
+# Database files
 *.db
 *.sqlite
 *.sqlite3
 
-# OS
+# System files
 .DS_Store
 Thumbs.db 

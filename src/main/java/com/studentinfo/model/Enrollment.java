@@ -1,24 +1,27 @@
 package com.studentinfo.model;
 
+import java.time.LocalDate;
+
 public class Enrollment {
     private int id;
     private int studentId;
     private int courseId;
-    private String enrollmentDate;
-    private String grade;
+    private LocalDate enrollmentDate;
+    private String status; // ACTIVE, DROPPED, COMPLETED
+    private Student student;
+    private Course course;
 
     public Enrollment() {
     }
 
-    public Enrollment(int id, int studentId, int courseId, String enrollmentDate, String grade) {
+    public Enrollment(int id, int studentId, int courseId, LocalDate enrollmentDate, String status) {
         this.id = id;
         this.studentId = studentId;
         this.courseId = courseId;
         this.enrollmentDate = enrollmentDate;
-        this.grade = grade;
+        this.status = status;
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -43,19 +46,55 @@ public class Enrollment {
         this.courseId = courseId;
     }
 
-    public String getEnrollmentDate() {
+    public LocalDate getEnrollmentDate() {
         return enrollmentDate;
     }
 
-    public void setEnrollmentDate(String enrollmentDate) {
+    public void setEnrollmentDate(LocalDate enrollmentDate) {
         this.enrollmentDate = enrollmentDate;
     }
 
-    public String getGrade() {
-        return grade;
+    public String getStatus() {
+        return status;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public String getCourseCode() {
+        return course != null ? course.getCourseCode() : "";
+    }
+
+    public String getCourseName() {
+        return course != null ? course.getName() : "";
+    }
+
+    public int getCredits() {
+        return course != null ? course.getCredits() : 0;
+    }
+
+    @Override
+    public String toString() {
+        if (student != null && course != null) {
+            return student.getName() + " - " + course.getName();
+        }
+        return "Enrollment #" + id;
     }
 } 
